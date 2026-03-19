@@ -2,7 +2,7 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from flask import Flask
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 
 # Load environment variables from a .env file if running locally
@@ -59,8 +59,9 @@ def check_tickets():
         'Accept-Language': 'en-US,en;q=0.9',
     }
     try:
-        response = requests.get(URL, headers=headers, allow_redirects=True)
+        response = requests.get(URL, impersonate="chrome110", allow_redirects=True)
         print(f"Requested URL: {URL}")
+        print(f"Status Code: {response.status_code}")
         print(f"Final URL: {response.url}")
         
         # Extract the target date from the URL (e.g. '20260423')
