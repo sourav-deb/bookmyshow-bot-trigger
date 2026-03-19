@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-# Target URL for 23 April 2026
-URL = "https://in.bookmyshow.com/movies/silchar/dhurandhar-the-revenge/buytickets/ET00478890/20260423"
+# Target URL for 23 March 2026
+URL = "https://in.bookmyshow.com/movies/silchar/dhurandhar-the-revenge/buytickets/ET00478890/20260323"
 
 def send_alert_email():
     """ Sends an email alert if the tickets are available. """
@@ -20,7 +20,7 @@ def send_alert_email():
         print("Skipping email alert. Please configure SENDER_EMAIL, SENDER_PASSWORD, and RECEIVER_EMAIL.")
         return
 
-    msg = MIMEText(f"Tickets for Dhurandhar The Revenge are now available for 23 April 2026!\n\nBook here: {URL}")
+    msg = MIMEText(f"Tickets for Dhurandhar The Revenge are now available for 23 March 2026!\n\nBook here: {URL}")
     msg['Subject'] = 'BookMyShow Ticket Alert!'
     msg['From'] = sender_email
     msg['To'] = receiver_email
