@@ -5,6 +5,13 @@ from flask import Flask
 import requests
 from bs4 import BeautifulSoup
 
+# Load environment variables from a .env file if running locally
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 app = Flask(__name__)
 
 # Target URL for 23 March 2026
