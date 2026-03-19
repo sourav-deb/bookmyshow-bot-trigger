@@ -15,7 +15,7 @@ except ImportError:
 app = Flask(__name__)
 
 # Target URL for 23 March 2026
-URL = "https://in.bookmyshow.com/movies/silchar/dhurandhar-the-revenge/buytickets/ET00478890/20260322"
+URL = "https://in.bookmyshow.com/movies/silchar/dhurandhar-the-revenge/buytickets/ET00478890/20260323"
 
 def send_alert_email():
     """ Sends an email alert if the tickets are available. """
@@ -59,11 +59,17 @@ def check_tickets():
         'Accept-Language': 'en-US,en;q=0.9',
     }
     try:
-        response = requests.get(URL, impersonate="chrome110", allow_redirects=True)
+        response = requests.get(URL, impersonate="chrome120", allow_redirects=True)
         print(f"Requested URL: {URL}")
         print(f"Status Code: {response.status_code}")
         print(f"Final URL: {response.url}")
         
+        soup = BeautifulSoup(response.text, 'html.parser')
+        print(f"Page Title: {soup.title.string.strip() if soup.title else 'None'}")
+        
+        if "access denied" in response.text.lower() or "just a moment" in response.text.lower():
+            print("ALERT: BookMyShow served a Bot Protection Challenge Page!")
+            
         # Extract the target date from the URL (e.g. '20260423')
         target_date = URL.rstrip('/').split('/')[-1]
         
