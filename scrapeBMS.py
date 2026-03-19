@@ -59,7 +59,7 @@ def check_tickets():
         'Accept-Language': 'en-US,en;q=0.9',
     }
     try:
-        response = requests.get(URL, impersonate="chrome120", allow_redirects=True)
+        response = requests.get(URL, impersonate="chrome110", allow_redirects=True)
         print(f"Requested URL: {URL}")
         print(f"Status Code: {response.status_code}")
         print(f"Final URL: {response.url}")
