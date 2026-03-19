@@ -52,16 +52,30 @@ def check_tickets():
         print(f"Requested URL: {URL}")
         print(f"Final URL: {response.url}")
         
-        # When tickets aren't released, BMS usually redirects to the movie page (without buytickets/date)
-        # or it stays on the page but mentions "No shows found" or "currently there are no shows"
+        # Extract the target date from the URL (e.g. '20260423')
+        target_date = URL.rstrip('/').split('/')[-1]
         
         content = response.text.lower()
         if "buytickets" in response.url.lower():
+            # If the page loads, we MUST verify that the requested date is actually available 
+            # in the date picker. If BMS defaulted to "today", the target date link won't exist.
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            date_found = False
+            for a in soup.find_all('a', href=True):
+                if target_date in a['href']:
+                    date_found = True
+                    break
+                    
+            if not date_found:
+                print(f"Date {target_date} not found in the date picker. Page defaulted to current date.")
+                return "Date not available yet.", 200
+
             if "currently there are no shows" in content or "no shows found" in content or "no shows" in content:
-                print("No tickets available yet.")
+                print("No tickets available yet for this date.")
                 return "No tickets available yet.", 200
             else:
-                print("Tickets appear to be available!")
+                print("Tickets appear to be available for the requested date!")
                 send_alert_email()
                 return "Tickets available! Alert sent.", 200
         else:
