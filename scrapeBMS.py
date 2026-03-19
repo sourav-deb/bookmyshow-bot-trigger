@@ -61,15 +61,19 @@ def check_tickets():
             # in the date picker. If BMS defaulted to "today", the target date link won't exist.
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            date_found = False
+            # If tickets for the target date are actually available and selected,
+            # BookMyShow will render showtimes. Every cinema listing has an href
+            # containing both '/cinemas/' and the active date.
+            # This is the most foolproof way to ignore disabled dates in the UI calendar.
+            active_date_shows_found = False
             for a in soup.find_all('a', href=True):
-                if target_date in a['href']:
-                    date_found = True
+                if target_date in a['href'] and '/cinemas/' in a['href']:
+                    active_date_shows_found = True
                     break
                     
-            if not date_found:
-                print(f"Date {target_date} not found in the date picker. Page defaulted to current date.")
-                return "Date not available yet.", 200
+            if not active_date_shows_found:
+                print(f"No shows found for {target_date} (page likely defaulted to another date).")
+                return "Date not actively available yet.", 200
 
             if "currently there are no shows" in content or "no shows found" in content or "no shows" in content:
                 print("No tickets available yet for this date.")
